@@ -145,18 +145,85 @@ Custom configuration is mounted from `./config/mosquitto.conf`. The current conf
 
 ## Troubleshooting
 
+## Troubleshooting
+
 ### Check service status
 
 ```bash
 docker-compose ps
 ```
 
-### View logs for a specific service
+### Check service health
+
+All services include health checks for automatic monitoring and recovery:
 
 ```bash
-docker-compose logs -f <service-name>
-# Example: docker-compose logs -f mariadb
+# Check health status of all services
+docker-compose ps --format "table {{.Name}}	{{.Status}}	{{.State}}"
+
+# Check specific service health
+docker inspect <container-name> --format "{{.State.Health.Status}}"
+
+# Example: Check MariaDB health
+docker inspect mariadb-dev --format "{{.State.Health.Status}}"
 ```
+
+### Health Check Commands by Service
+
+#### Database Services
+
+```bash
+# MariaDB
+docker exec mariadb-dev mysqladmin ping -h localhost
+
+# MongoDB
+docker exec mongo-dev mongosh --eval "db.adminCommand('ping')"
+
+# PostgreSQL
+docker exec postgres-dev pg_isready -U postgres
+
+# Redis
+docker exec redis-dev redis-cli ping
+```
+
+#### Search & Analytics
+
+```bash
+# Elasticsearch
+curl http://localhost:32774/_cluster/health
+```
+
+#### Message Brokers
+
+```bash
+# RabbitMQ
+docker exec rabbitmq-dev rabbitmq-diagnostics ping
+
+# Mosquitto MQTT
+docker exec mosquitto-dev mosquitto_pub -h localhost -t health -m ping
+
+# Kafka
+docker exec kafka kafka-broker-api-versions --bootstrap-server localhost:9092
+
+# Zookeeper
+docker exec zookeeper sh -c "echo ruok | nc localhost 2181"
+```
+
+#### Cloud Emulators
+
+```bash
+# Pub/Sub Emulator
+curl -f http://localhost:8085/v1/projects/STAGING
+```
+
+### Health Status Meanings
+
+- **healthy** - Service is running and responding correctly
+- **unhealthy** - Service failed health checks (will restart automatically)
+- **starting** - Service is initializing, health checks not yet passed
+- **none** - No health check configured
+
+### View logs for a specific service
 
 ### Restart a specific service
 
