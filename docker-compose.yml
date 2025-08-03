@@ -1,0 +1,104 @@
+version: "3.6"
+
+services:
+  mariadb:
+    container_name: mariadb-dev
+    image: mariadb:10.6
+    volumes:
+      - sql-data:/var/lib/mysql
+    ports:
+      - 32768:3306
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+  mongodb:
+    container_name: mongo-dev
+    image: mongo:4.4
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - 32769:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+  redis:
+    container_name: redis-dev
+    image: redis:6.2
+    ports:
+      - 32770:6379
+  postgres:
+    container_name: postgres-dev
+    image: postgres:12
+    ports:
+      - 32771:5432
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+  elastic:
+    container_name: elastic-dev
+    image: elasticsearch:7.10.2
+    ports:
+      - 32774:9200
+      - 32773:9300
+    environment:
+      - discovery.type=single-node
+    volumes:
+      - el-data:/usr/share/elasticsearch/data
+  mosquitto:
+    container_name: mosquitto-dev
+    image: eclipse-mosquitto:2.0.15
+    ports:
+      - 1883:1883
+      - 9001:9001
+    volumes:
+      - ./config/mosquitto.conf:/mosquitto/config/mosquitto.conf
+  pubsub:
+    container_name: pubsub-emulator
+    image: singularities/pubsub-emulator:latest
+    environment:
+      - PUBSUB_PROJECT_ID=REYSTAGING
+      - PUBSUB_LISTEN_ADDRESS=0.0.0.0:8888
+    ports:
+      - "8888:8888"
+  rabbitmq:
+    container_name: rabbitmq-dev
+    image: rabbitmq:3.10-management
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - mq-data:/var/lib/rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: rabbit
+      RABBITMQ_DEFAULT_PASS: rabbit
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.0.1
+    container_name: zookeeper
+    restart: always
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+  kafka:
+    image: confluentinc/cp-kafka:7.0.1
+    container_name: kafka
+    restart: always
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+
+volumes:
+  sql-data:
+  mongo-data:
+  pg-data:
+  el-data:
+  mq-data:
