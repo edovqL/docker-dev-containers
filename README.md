@@ -145,8 +145,6 @@ Custom configuration is mounted from `./config/mosquitto.conf`. The current conf
 
 ## Troubleshooting
 
-## Troubleshooting
-
 ### Check service status
 
 ```bash

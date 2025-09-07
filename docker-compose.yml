@@ -1,8 +1,7 @@
 version: "3.6"
-
 services:
   mariadb:
-    container_name: mariadb-dev
+    container_name: mariadb
     image: mariadb:10.11
     volumes:
       - sql-data:/var/lib/mysql
@@ -16,7 +15,7 @@ services:
       timeout: 10s
       retries: 3
   mongodb:
-    container_name: mongo-dev
+    container_name: mongodb
     image: mongo:6.0
     volumes:
       - mongo-data:/data/db
@@ -31,7 +30,7 @@ services:
       timeout: 10s
       retries: 3
   redis:
-    container_name: redis-dev
+    container_name: redis
     image: redis:7.2-alpine
     ports:
       - 32770:6379
@@ -42,7 +41,7 @@ services:
       timeout: 10s
       retries: 3
   postgres:
-    container_name: postgres-dev
+    container_name: postgres
     image: postgres:15
     ports:
       - 32771:5432
@@ -57,7 +56,7 @@ services:
       timeout: 10s
       retries: 3
   elastic:
-    container_name: elastic-dev
+    container_name: elastic
     image: elasticsearch:8.11.0
     ports:
       - 32774:9200
@@ -75,7 +74,7 @@ services:
       timeout: 10s
       retries: 3
   mosquitto:
-    container_name: mosquitto-dev
+    container_name: mosquitto
     image: eclipse-mosquitto:2.0.18
     ports:
       - 1883:1883
@@ -109,7 +108,7 @@ services:
       timeout: 10s
       retries: 3
   rabbitmq:
-    container_name: rabbitmq-dev
+    container_name: rabbitmq
     image: rabbitmq:3.12-management
     ports:
       - 5672:5672
@@ -163,7 +162,6 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
-
 volumes:
   sql-data:
   mongo-data:
