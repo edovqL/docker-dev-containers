@@ -87,26 +87,6 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
-  pubsub:
-    container_name: pubsub-emulator
-    image: gcr.io/google.com/cloudsdktool/google-cloud-cli:456.0.0-alpine
-    command: >
-      sh -c "gcloud beta emulators pubsub start
-      --project=STAGING
-      --host-port=0.0.0.0:8085"
-    environment:
-      - PUBSUB_PROJECT_ID=STAGING
-    ports:
-      - "8085:8085"
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "curl -f http://localhost:8085/v1/projects/STAGING || exit 1",
-        ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
   rabbitmq:
     container_name: rabbitmq
     image: rabbitmq:3.12-management

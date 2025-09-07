@@ -12,7 +12,6 @@ This setup provides the following services:
 - **PostgreSQL** - Port 32771
 - **Elasticsearch** - Ports 32774 (HTTP), 32773 (Transport)
 - **Mosquitto MQTT Broker** - Ports 1883 (MQTT), 9001 (WebSocket)
-- **Google Cloud Pub/Sub Emulator** - Port 8888
 - **RabbitMQ** - Ports 5672 (AMQP), 15672 (Management UI)
 - **Apache Kafka** with **Zookeeper** - Ports 9092 (Kafka), 2181 (Zookeeper)
 
@@ -97,12 +96,6 @@ docker-compose logs -f
 - **MQTT Port**: 1883
 - **WebSocket Port**: 9001
 - **Test**: `mosquitto_pub -h localhost -t test -m "Hello World"`
-
-### Google Cloud Pub/Sub Emulator
-
-- **Port**: 8888
-- **Project ID**: REYSTAGING
-- **Endpoint**: http://localhost:8888
 
 ### RabbitMQ
 
@@ -207,13 +200,6 @@ docker exec kafka kafka-broker-api-versions --bootstrap-server localhost:9092
 docker exec zookeeper sh -c "echo ruok | nc localhost 2181"
 ```
 
-#### Cloud Emulators
-
-```bash
-# Pub/Sub Emulator
-curl -f http://localhost:8085/v1/projects/STAGING
-```
-
 ### Health Status Meanings
 
 - **healthy** - Service is running and responding correctly
@@ -265,10 +251,6 @@ docker system prune -a
 ### Caching
 
 - Use Redis for caching and session storage
-
-### Cloud Development
-
-- Use Pub/Sub emulator for Google Cloud development
 
 ## Security Note
 
